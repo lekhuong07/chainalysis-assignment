@@ -29,4 +29,4 @@ if __name__ == '__main__':
         replace_existing=True)
     # Shut down the scheduler when exiting the app
     atexit.register(lambda: scheduler.shutdown())
-    app.run(debug=True, host='0.0.0.0', use_reloader=True)
+    app.run(host='127.0.0.1', port=8000 ,debug=True, use_reloader=True)
