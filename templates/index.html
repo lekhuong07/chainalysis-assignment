@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta http-equiv="refresh" content="5" >
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+
+    <title>Cryptocurrency comparison</title>
+  </head>
+  <body>
+
+    <div class="container">
+
+      <div class="row mb-5">
+        <div class="col text-center">
+          <h1 class="mb-3">
+            Cryptocurrency comparison
+          </h1>
+          <h4 class="mb-2">
+            <small class="text-muted">
+                Supported coins: {{coin}}
+            </small>
+          </h4>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col">
+          <div class="card green text-center">
+            <h2> Coinbase </h2>
+          </div>
+          {% for c in value['coinbase'] %}
+          <div class="col">
+            <div class="card green text-center">
+              <h1>{{ c['ticker'] }}</h1>
+              <p> Buy: {{ c['buy'] }}</p>
+              <p> Sell: {{ c['sell'] }}</p>
+              <p> Profit: {{ c['diff'] }} </p>
+            </div>
+          </div>
+          {% endfor %}
+        </div>
+
+        <div class="col">
+          <div class="card red text-center">
+            <h2> Lunacrush </h2>
+          </div>
+          {% for c in value['lunacrush'] %}
+          <div class="col">
+            <div class="card red text-center">
+              <h1>{{ c['ticker'] }}</h1>
+              <p>Buy: {{ c['buy'] }}</p>
+              <p>Sell: {{ c['sell'] }}</p>
+              <p>Profit: {{ c['diff']}} </p>
+            </div>
+          </div>
+          {% endfor %}
+        </div>
+
+        <div class="col">
+          <div class="card blue text-center">
+            <h2> Decision </h2>
+          </div>
+          {% for i in range(value['coinbase']|length) %}
+              {% if(value['coinbase'][i]['diff'] >= value['lunacrush'][i]['diff']) %}
+                <div class="col">
+                  <div class="card green text-center">
+                    <h1>{{ value['coinbase'][i]['ticker'] }}</h1>
+                    <p>Coinbase: {{value['coinbase'][i]['diff']}}</p>
+                    <p>Lunacrush: {{value['lunacrush'][i]['diff']}}</p>
+                    <p>Decision: Coinbase</p>
+                  </div>
+                </div>
+              {% else %}
+                <div class="col">
+                  <div class="card red text-center">
+                    <h1>{{ value['lunacrush'][i]['ticker'] }}</h1>
+                    <p>Coinbase: {{value['coinbase'][i]['diff']}}</p>
+                    <p>Lunacrush: {{value['lunacrush'][i]['diff']}}</p>
+                    <p>Decision: Lunacrush</p>
+                  </div>
+                </div>
+              {% endif %}
+          {% endfor %}
+        </div>
+
+      </div>
+
+    </div>
+  </body>
+</html>

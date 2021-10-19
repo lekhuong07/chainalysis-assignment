@@ -1,0 +1,20 @@
+body {
+  margin-top: 50px;
+}
+
+.description {
+  font-size: 24px;
+  color: gray;
+}
+
+.green {
+  border: 2px solid rgba(0,164,0,.8)
+}
+
+.red {
+  border: 2px solid rgba(164,0,0,.8)
+}
+
+.blue {
+    border: 2px solid rgba(44, 130, 201, 1)
+}
