@@ -36,10 +36,10 @@ if __name__ == '__main__':
     scheduler.start()
     scheduler.add_job(
         func=get_data,
-        trigger=IntervalTrigger(seconds=30),
+        trigger=IntervalTrigger(seconds=10),
         id='prices_retrieval_job',
-        name='Retrieve prices every 30 seconds',
+        name='Retrieve prices every 10 seconds',
         replace_existing=True)
     # Shut down the scheduler when exiting the app
     atexit.register(lambda: scheduler.shutdown())
-    app.run(host='127.0.0.1', port=8000, debug=True, use_reloader=False)
+    app.run(host='127.0.0.1', port=8000, debug=True, use_reloader=True)
