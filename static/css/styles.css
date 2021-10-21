@@ -18,3 +18,18 @@ body {
 .blue {
     border: 2px solid rgba(44, 130, 201, 1)
 }
+
+.grid-container {
+  display: grid;
+  height: 200px;
+  align-content: space-evenly;
+  grid-template-columns: auto auto auto;
+  grid-gap: 10px;
+  padding: 10px;
+}
+
+.grid-container > div {
+  text-align: center;
+  padding: 20px 0;
+  font-size: 20px;
+}

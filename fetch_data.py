@@ -1,5 +1,6 @@
 import requests
-from constants import KEY, COIN_LIST
+from constants import KEY, COIN_LIST, CURRENCIES
+from forex_python.converter import CurrencyRates
 
 
 # get data from lunacrush
@@ -29,32 +30,40 @@ def get_price_from_coinbase(ticker, order_type):
 def get_data():
     # https://help.coinbase.com/en/pro/trading-and-funding/trading-rules-and-fees/fees
     data = {
-        'coinbase': [],
-        'lunacrush': []
+        "coinbase": [],
+        "lunacrush": []
     }
+
     for coin in COIN_LIST:
         # make API call so don't call it again in initialize value
-        cb_buy = float(get_price_from_coinbase(coin, 'buy'))  # coinbase return a string
-        cb_sell = float(get_price_from_coinbase(coin, 'sell'))
+        cb_buy = round(float(get_price_from_coinbase(coin, "buy")), 2)  # coinbase return a string
+        cb_sell = round(float(get_price_from_coinbase(coin, "sell")), 2)
         # let's say lunacrush charges 0.5% to buy and 0.3% to sell (coinbase max is 0.5% for both)
         # if it's an exchange
-        lc_buy = round(get_price_from_lunacrush(coin)*1.005, 2)
-        lc_sell = round(get_price_from_lunacrush(coin)*0.997, 2)
-        data['coinbase'].append({
-            'ticker': coin.upper(),
-            'buy': cb_buy,  # 0.50% if < 10K
-            'sell': cb_sell,  # 0.50% if < 10K
-            'diff': round(cb_sell - cb_buy, 2)  # if you buy then sell instantly
+        lc_buy = round(get_price_from_lunacrush(coin) * 1.005, 2)
+        lc_sell = round(get_price_from_lunacrush(coin) * 0.997, 2)
+        data["coinbase"].append({
+            "ticker": coin.upper(),
+            "buy": cb_buy,  # 0.50% if < 10K
+            "sell": cb_sell,  # 0.50% if < 10K
+            "diff": round(cb_sell - cb_buy, 2)  # if you buy then sell instantly
         })
-        data['lunacrush'].append({
-            'ticker': coin.upper(),
-            'buy': lc_buy,
-            'sell': lc_sell,
-            'diff': round(lc_sell - lc_buy, 2)
+        data["lunacrush"].append({
+            "ticker": coin.upper(),
+            "buy": lc_buy,
+            "sell": lc_sell,
+            "diff": round(lc_sell - lc_buy, 2)
         })
     return data
 
 
 if __name__ == '__main__':
     # Testing API calls
-    print(get_data())
+    cr = CurrencyRates()
+    rate = cr.get_rates("USD")
+    rate_result = {"USD": 1.00}
+    for c in CURRENCIES:
+        if c != "USD":
+            rate_result[c] = round(rate[c], 2)
+    print(rate_result)
+    #print(get_data())

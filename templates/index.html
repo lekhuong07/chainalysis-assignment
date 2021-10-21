@@ -4,39 +4,46 @@
     <!-- Required meta tags -->
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <meta http-equiv="refresh" content="5" >
+
 
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
 
     <!-- Custom CSS -->
     <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+    <meta http-equiv="refresh" content="5" >
 
     <title>Cryptocurrency comparison</title>
   </head>
-  <body>
-
-    <div class="container">
-
-      <div class="row mb-5">
-        <div class="col text-center">
-          <h1 class="mb-3">
-            Cryptocurrency comparison
-          </h1>
-          <h4 class="mb-2">
-            <small class="text-muted">
-                Supported coins: {{coin}}
-            </small>
-          </h4>
+    <body>
+      <div class="container">
+        <div class="row mb-5">
+          <div class="col text-center">
+            <h1 class="mb-3">
+              Cryptocurrency comparison
+            </h1>
+            <h4 class="mb-2">
+              <small class="text-muted">
+                Supported coins: {{render_value['coin_str']}}
+              </small>
+            </h4>
+          </div>
+      </div>
+      <div class="container text-center">
+        <div class="grid-container">
+          {% for curr, rate in render_value['rate_result'].items() %}
+          <div class="card blue text-center">
+             <div> {{curr}}: {{rate}} </div>
+          </div>
+          {% endfor %}
         </div>
       </div>
-
-      <div class="row">
+      <div class="row mb-5">
         <div class="col">
           <div class="card blue text-center">
             <h2> Coinbase </h2>
           </div>
-          {% for c in value['coinbase'] %}
+          {% for c in render_value['value']['coinbase'] %}
           <div class="col">
             <div class="card green text-center">
               <h1>{{ c['ticker'] }}</h1>
@@ -52,7 +59,7 @@
           <div class="card blue text-center">
             <h2> Lunacrush </h2>
           </div>
-          {% for c in value['lunacrush'] %}
+          {% for c in render_value['value']['lunacrush'] %}
           <div class="col">
             <div class="card red text-center">
               <h1>{{ c['ticker'] }}</h1>
@@ -68,22 +75,22 @@
           <div class="card blue text-center">
             <h2> Decision </h2>
           </div>
-          {% for i in range(value['coinbase']|length) %}
-              {% if(value['coinbase'][i]['diff'] >= value['lunacrush'][i]['diff']) %}
+          {% for i in range(render_value['value']['coinbase']|length) %}
+              {% if(render_value['value']['coinbase'][i]['diff'] >= render_value['value']['lunacrush'][i]['diff']) %}
                 <div class="col">
                   <div class="card green text-center">
-                    <h1>{{ value['coinbase'][i]['ticker'] }}</h1>
-                    <p>Coinbase: {{value['coinbase'][i]['diff']}}</p>
-                    <p>Lunacrush: {{value['lunacrush'][i]['diff']}}</p>
+                    <h1>{{ render_value['value']['coinbase'][i]['ticker'] }}</h1>
+                    <p>Coinbase: {{render_value['value']['coinbase'][i]['diff']}}</p>
+                    <p>Lunacrush: {{render_value['value']['lunacrush'][i]['diff']}}</p>
                     <p>Decision: Coinbase</p>
                   </div>
                 </div>
               {% else %}
                 <div class="col">
                   <div class="card red text-center">
-                    <h1>{{ value['lunacrush'][i]['ticker'] }}</h1>
-                    <p>Coinbase: {{value['coinbase'][i]['diff']}}</p>
-                    <p>Lunacrush: {{value['lunacrush'][i]['diff']}}</p>
+                    <h1>{{ render_value['value']['lunacrush'][i]['ticker'] }}</h1>
+                    <p>Coinbase: {{render_value['value']['coinbase'][i]['diff']}}</p>
+                    <p>Lunacrush: {{render_value['value']['lunacrush'][i]['diff']}}</p>
                     <p>Decision: Lunacrush</p>
                   </div>
                 </div>
@@ -92,7 +99,24 @@
         </div>
 
       </div>
-
     </div>
+  </div>
+  <script>
+    updateCurrency("JPY");
+    function updateCurrency(c) {
+      var i;
+      for (i = 0; i < render_value['value']['lunacrush'].length; i++) {
+        render_value['value']['lunacrush'][i]['buy'] *= render_value['rate_result'][c]
+        render_value['value']['lunacrush'][i]['sell'] *= render_value['rate_result'][c]
+        render_value['value']['lunacrush'][i]['diff'] *= render_value['rate_result'][c]
+      }
+      for (i = 0; i < render_value['value']['lunacrush'].length; i++) {
+        render_value['value']['coinbase'][i]['buy'] *= render_value['rate_result'][c]
+        render_value['value']['coinbase'][i]['sell'] *= render_value['rate_result'][c]
+        render_value['value']['coinbase'][i]['diff'] *= render_value['rate_result'][c]
+      }
+    }
+    console.log(render_value['value'])
+  </script>
   </body>
 </html>
